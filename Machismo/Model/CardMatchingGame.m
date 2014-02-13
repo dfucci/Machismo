@@ -10,6 +10,7 @@
 @interface CardMatchingGame()
 @property (nonatomic, readwrite) NSInteger score;
 @property (nonatomic, strong) NSMutableArray *cards; //of Card
+@property (nonatomic, weak) NSString *gameType;
 @end
 @implementation CardMatchingGame
 -(NSMutableArray *)cards
@@ -17,7 +18,12 @@
     if (!_cards) _cards = [[NSMutableArray alloc]init];
     return _cards;
 }
-
+-(instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck gameType:(NSString*)type{
+    self = [self initWithCardCount:count usingDeck:deck];
+    _gameType = type;
+    return self;
+    
+}
 -(instancetype)initWithCardCount:(NSUInteger)count usingDeck:(Deck *)deck
 {
     self = [super init];
@@ -32,7 +38,7 @@
             }
         }
     }
-    
+    _gameType = @"TWO_CARDS";
     return self;
 }
 
