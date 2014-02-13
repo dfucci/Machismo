@@ -53,17 +53,28 @@
     if([otherCards count]==1)
     {
         PlayingCard *otherCard = [otherCards firstObject];
-        if (otherCard.rank == self.rank) {
-            score = 4;
-        }
-        else if ([otherCard.suit isEqualToString:self.suit]) {
-            score = 1;
-        }
+        score = [self calculateScoreBeetween:self secondCard:otherCard];
+       
     }
     
     if ([otherCards count] == 2) {
-        //TODO: do something
+        PlayingCard *firstCard = [otherCards firstObject];
+        PlayingCard *secondCard = [otherCards objectAtIndex:1];
+        score = [self calculateScoreBeetween:self secondCard:firstCard] + [self calculateScoreBeetween:self secondCard:secondCard] + [self calculateScoreBeetween:firstCard secondCard:secondCard];
     }
+    return score;
+}
+
+-(int)calculateScoreBeetween:(PlayingCard *)firstCard secondCard:(PlayingCard *)secondCard
+{
+    int score=0;
+    if (firstCard.rank == secondCard.rank) {
+        score = 4;
+    }
+    else if ([firstCard.suit isEqualToString:secondCard.suit]) {
+        score = 1;
+    }
+    
     return score;
 }
 @end
