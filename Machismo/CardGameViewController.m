@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *dealButton;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *numberOfCardsPicker;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLable;
+@property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (strong, nonatomic)CardMatchingGame *game;
 @end
 
@@ -47,6 +48,27 @@
         [cardButton setBackgroundImage:[self backgroundImageForCard:card] forState:UIControlStateNormal];
         cardButton.enabled = !card.isMatched;
         self.scoreLable.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
+    }
+    
+    if (self.game) {
+        NSString *description = @"";
+        
+        if ([self.game.lastChosenCards count]) {
+            NSMutableArray *cardContents = [NSMutableArray array];
+            for (Card *card in self.game.lastChosenCards) {
+                [cardContents addObject:card.contents];
+            }
+            description = [cardContents componentsJoinedByString:@" "];
+        }
+        
+        if (self.game.lastScore > 0) {
+            description = [NSString stringWithFormat:@"Matched %@ for %d points.", description, self.game.lastScore];
+        } else if (self.game.lastScore < 0) {
+            
+            description = [NSString stringWithFormat:@"%@ don’t match! %d point penalty!", description, -self.game.lastScore];
+        }
+        
+        self.descriptionLabel.text = description;
     }
 }
 
@@ -85,12 +107,7 @@
 }
 
 
-- (IBAction)gameSelectionChanged:(id)sender {
-    
-    if (self.numberOfCardsPicker.selectedSegmentIndex == 0) {
-        NSLog(@"First");
-    } else if (self.numberOfCardsPicker.selectedSegmentIndex == 1) {
-        NSLog(@"Second");
+- (IBAction)gameSelectionChanged:(UISegmentedControl *)sender {
+    self.game.cardsToMatch = [[sender titleForSegmentAtIndex:sender.selectedSegmentIndex]integerValue];
     }
-}
 @end

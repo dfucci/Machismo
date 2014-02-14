@@ -43,38 +43,32 @@
 }
 
 +(NSArray *)rankString{
-    return @[@"?",@"A",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"J",@"Q",@"K"];
+    return @[@"?",@"A",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"T",@"J",@"Q",@"K"];
 }
 
 
--(int)match:(NSArray *)otherCards
+- (int)match:(NSArray *)otherCards
 {
     int score = 0;
-    if([otherCards count]==1)
-    {
-        PlayingCard *otherCard = [otherCards firstObject];
-        score = [self calculateScoreBeetween:self secondCard:otherCard];
-       
-    }
+    int numOtherCards = [otherCards count];
     
-    if ([otherCards count] == 2) {
-        PlayingCard *firstCard = [otherCards firstObject];
-        PlayingCard *secondCard = [otherCards objectAtIndex:1];
-        score = [self calculateScoreBeetween:self secondCard:firstCard] + [self calculateScoreBeetween:self secondCard:secondCard] + [self calculateScoreBeetween:firstCard secondCard:secondCard];
+    if (numOtherCards) {
+        for (Card *card in otherCards) {
+            if ([card isKindOfClass:[PlayingCard class]]) {
+                PlayingCard *otherCard = (PlayingCard *)card;
+                if ([self.suit isEqualToString:otherCard.suit]) {
+                    score += 1;
+                } else if (self.rank == otherCard.rank) {
+                    score += 4;
+                }
+            }
+        }
+    }
+    if (numOtherCards > 1) {
+        score += [[otherCards firstObject] match:[otherCards subarrayWithRange:NSMakeRange(1, numOtherCards - 1)]];
     }
     return score;
 }
 
--(int)calculateScoreBeetween:(PlayingCard *)firstCard secondCard:(PlayingCard *)secondCard
-{
-    int score=0;
-    if (firstCard.rank == secondCard.rank) {
-        score = 4;
-    }
-    else if ([firstCard.suit isEqualToString:secondCard.suit]) {
-        score = 1;
-    }
-    
-    return score;
-}
+
 @end
